@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# Copyright 2018, MDrights <mdrights@tutanota.de>
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+set -e
+
+PKGNAM=linux
+VERSION=${VERSION:-4.9.76}
+ARCH=x86_64
+BUILD=${BUILD:-3}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+SRC=/home/user/src/${PKGNAM}-${VERSION}
+PKG=${TMP}/${PKGNAM}
+
+rm -rf $PKG
+mkdir -p $PKG
+mkdir -p ${PKG}/boot/
+mkdir -p ${PKG}/lib/modules/
+mkdir -p ${PKG}/install/
+
+cd $SRC
+# git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+# find . -name ".git*" -exec rm -rf "{}" \;
+
+chown -R root:root .
+
+# Compile it. Change the XXXconfig to suit to your need.
+#make mrproper
+#make localmodconfig
+#make -j5
+#make modules_install install
+
+# Copy the output.
+cp .config ${PKG}/boot/config-${VERSION}
+cp /boot/vmlinuz ${PKG}/boot/vmlinuz-generic-${VERSION}
+cp /boot/System.map ${PKG}/boot/System.map-${VERSION} 
+cp -r /lib/modules/${VERSION} ${PKG}/lib/modules/
+cp ${CWD}/doinst.sh ${PKG}/install/
+
+
+cd $PKG
+/sbin/makepkg -l y -c n $TMP/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+
