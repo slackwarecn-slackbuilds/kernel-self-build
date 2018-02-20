@@ -22,8 +22,8 @@
 
 set -e
 
-PKGNAM=linux-modules
-VERSION=${VERSION:-4.9.76}
+PKGNAM=kernel-modules
+VERSION=${VERSION:-4.9.81}
 ARCH=x86_64
 BUILD=${BUILD:-1}
 

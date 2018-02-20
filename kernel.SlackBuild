@@ -23,13 +23,13 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-4.9.76}
+VERSION=${VERSION:-4.9.81}
 ARCH=x86_64
-BUILD=${BUILD:-3}
+BUILD=${BUILD:-1}
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp}
-SRC=/home/user/src/${PKGNAM}-${VERSION}
+SRC=$CWD/${PKGNAM}-${VERSION}
 PKG=${TMP}/${PKGNAM}
 
 rm -rf $PKG
@@ -38,17 +38,25 @@ mkdir -p ${PKG}/boot/
 mkdir -p ${PKG}/lib/modules/
 mkdir -p ${PKG}/install/
 
+# Unpack the kernel tar ball.
+xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
+
+
 cd $SRC
+
+# Use previous kernel config.
+cp /boot/config-4.9.76 ./.config
+
 # git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 # find . -name ".git*" -exec rm -rf "{}" \;
 
 chown -R root:root .
 
 # Compile it. Change the XXXconfig to suit to your need.
-#make mrproper
-#make localmodconfig
-#make -j5
-#make modules_install install
+make mrproper      || (echo "Error: make mrproper."; exit 1)
+make oldconfig || (echo "Error: make **config"; exit 1)
+make -j4 || (echo "Error: make."; exit 1)
+make modules_install install || true
 
 # Copy the output.
 cp .config ${PKG}/boot/config-${VERSION}
@@ -59,5 +67,5 @@ cp ${CWD}/doinst.sh ${PKG}/install/
 
 
 cd $PKG
-/sbin/makepkg -l y -c n $TMP/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $TMP/kernel-generic-$VERSION-$ARCH-$BUILD.txz
 
