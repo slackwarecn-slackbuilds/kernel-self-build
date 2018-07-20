@@ -1,5 +1,5 @@
 # kernel-self-build
-My self-built kernel which is not provided by Slackware official repo (e.g. latest linux-4.9.76)
+My self-built kernel which is not provided by Slackware official repo (e.g. linux-4.9.x)
 
 **Note1:** the kernel-modules SlackBuild is just a meta-package as a placeholder. The kernel modules were to be installed along with the kernel.SlackBuild altogether.
 
