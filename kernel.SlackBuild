@@ -48,6 +48,9 @@ make mrproper      || (echo "Error: make mrproper."; exit 1)
 # Use the running kernel's config.
 zcat /proc/config.gz > ./.config
 
+# Customize the config:
+sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
+
 # git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 # find . -name ".git*" -exec rm -rf "{}" \;
 
