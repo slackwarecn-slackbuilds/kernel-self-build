@@ -54,7 +54,7 @@ zcat /proc/config.gz > ./.config
 chown -R root:root .
 
 # Compile it. Change the XXXconfig to suit to your need.
-make oldconfig || (echo "Error: make oldconfig"; exit 1)
+make olddefconfig || (echo "Error: make oldconfig"; exit 1)
 make -j4 || (echo "Error: make."; exit 1)
 make modules_install install || true
 
