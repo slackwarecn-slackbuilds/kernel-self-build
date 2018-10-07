@@ -23,9 +23,9 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-4.9.113}
+VERSION=${VERSION:-4.9.131}
 ARCH=x86_64
-BUILD=${BUILD:-2_MD}
+BUILD=${BUILD:-1_MD}
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp}
