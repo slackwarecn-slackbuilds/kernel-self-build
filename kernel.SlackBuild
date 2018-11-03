@@ -23,7 +23,7 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-4.9.131}
+VERSION=${VERSION:-4.19.0}
 ARCH=x86_64
 BUILD=${BUILD:-1_MD}
 
@@ -39,10 +39,12 @@ mkdir -p ${PKG}/lib/modules/
 mkdir -p ${PKG}/install/
 
 # Unpack the kernel tar ball.
-xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
+# xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
+xzcat -cd linux-4.19.tar.xz | tar xvf -
 
 
-cd $SRC
+# cd $SRC
+cd linux-4.19
 
 make mrproper      || (echo "Error: make mrproper."; exit 1)
 # Use the running kernel's config.
