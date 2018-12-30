@@ -23,7 +23,7 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-4.19.0}
+VERSION=${VERSION:-4.19.13}
 ARCH=x86_64
 BUILD=${BUILD:-1_MD}
 
@@ -39,16 +39,14 @@ mkdir -p ${PKG}/lib/modules/
 mkdir -p ${PKG}/install/
 
 # Unpack the kernel tar ball.
-# xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
-xzcat -cd linux-4.19.tar.xz | tar xvf -
+xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
 
-
-# cd $SRC
-cd linux-4.19
+cd $SRC
 
 make mrproper      || (echo "Error: make mrproper."; exit 1)
 # Use the running kernel's config.
-zcat /proc/config.gz > ./.config
+#zcat /proc/config.gz > ./.config
+cp /tmp/config ./.config
 
 # Customize the config:
 sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
@@ -59,8 +57,8 @@ sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
 chown -R root:root .
 
 # Compile it. Change the XXXconfig to suit to your need.
-make olddefconfig || (echo "Error: make oldconfig"; exit 1)
-make -j4 || (echo "Error: make."; exit 1)
+make oldconfig || echo "Error: make oldconfig"
+make -j4 || echo "Error: make"
 make modules_install install || true
 
 # Copy the output.
