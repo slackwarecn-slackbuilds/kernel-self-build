@@ -1,2 +1,2 @@
-VERSION="4.19.13"
+VERSION="4.19.34"
 DOWNLOAD="https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${VERSION}.tar.xz"
