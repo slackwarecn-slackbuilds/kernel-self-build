@@ -23,7 +23,7 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-4.19.13}
+VERSION=${VERSION:-5.6.13}
 ARCH=x86_64
 BUILD=${BUILD:-1_MD}
 
@@ -43,10 +43,10 @@ xzcat -cd linux-${VERSION}.tar.xz | tar xvf -
 
 cd $SRC
 
-make mrproper      || (echo "Error: make mrproper."; exit 1)
+make mrproper      || echo ">> Error: make mrproper."
 # Use the running kernel's config.
-#zcat /proc/config.gz > ./.config
-cp /tmp/config ./.config
+# zcat /proc/config.gz > ./.config
+ cp /home/user/tmp/config ./.config
 
 # Customize the config:
 sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
@@ -57,15 +57,21 @@ sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
 chown -R root:root .
 
 # Compile it. Change the XXXconfig to suit to your need.
-make oldconfig || echo "Error: make oldconfig"
-make -j4 || echo "Error: make"
-make modules_install install || exit 1
+make olddefconfig || echo ">> Error: make oldconfig"
+make -j4 || echo ">> Error: make"
+
+echo ">> Making modules installed to $PKG..."
+#make modules_install install || exit 1
+INSTALL_MOD_PATH=$PKG make modules_install || exit 1
 
 # Copy the output.
 cp .config ${PKG}/boot/config-${VERSION}
-cp /boot/vmlinuz ${PKG}/boot/vmlinuz-generic-${VERSION}
-cp /boot/System.map ${PKG}/boot/System.map-${VERSION} 
-cp -r /lib/modules/${VERSION} ${PKG}/lib/modules/
+#cp /boot/vmlinuz ${PKG}/boot/vmlinuz-generic-${VERSION}
+cat arch/x86/boot/bzImage > ${PKG}/boot/vmlinuz-generic-${VERSION}
+#cp /boot/System.map ${PKG}/boot/System.map-${VERSION} 
+cat System.map > ${PKG}/boot/System.map-${VERSION} 
+
+#cp -r /lib/modules/${VERSION} ${PKG}/lib/modules/
 cp ${CWD}/doinst.sh ${PKG}/install/
 
 cd -
@@ -79,4 +85,4 @@ cd $PKG
 /sbin/makepkg -l y -c n $TMP/kernel-generic-$VERSION-$ARCH-$BUILD.txz
 
 cd $PKG_SRC
-/sbin/makepkg -l y -c n $TMP/kernel-generic-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $TMP/kernel-generic-source-$VERSION-$ARCH-$BUILD.txz
