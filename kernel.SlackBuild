@@ -45,8 +45,8 @@ cd $SRC
 
 make mrproper      || echo ">> Error: make mrproper."
 # Use the running kernel's config.
-# zcat /proc/config.gz > ./.config
- cp /home/user/tmp/config ./.config
+ zcat /proc/config.gz > ./.config
+# cp /home/user/tmp/config ./.config
 
 # Customize the config:
 sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
@@ -85,4 +85,4 @@ cd $PKG
 /sbin/makepkg -l y -c n $TMP/kernel-generic-$VERSION-$ARCH-$BUILD.txz
 
 cd $PKG_SRC
-/sbin/makepkg -l y -c n $TMP/kernel-generic-source-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $TMP/kernel-source-$VERSION-$ARCH-$BUILD.txz
