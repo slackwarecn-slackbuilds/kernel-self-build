@@ -23,7 +23,7 @@
 set -e
 
 PKGNAM=linux
-VERSION=${VERSION:-5.4.40}
+VERSION=${VERSION:-5.10.4}
 ARCH=x86_64
 BUILD=${BUILD:-1_MD}
 
@@ -45,8 +45,8 @@ cd $SRC
 
 make mrproper      || echo ">> Error: make mrproper."
 # Use the running kernel's config.
- zcat /proc/config.gz > ./.config
-# cp /home/user/tmp/config ./.config
+# cp /boot/config ./.config
+zcat /proc/config.gz > ./.config
 
 # Customize the config:
 sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
@@ -57,7 +57,7 @@ sed -i '/CONFIG_SECURITY_APPARMOR/s/.*/CONFIG_SECURITY_APPARMOR=y/' .config
 chown -R root:root .
 
 # Compile it. Change the XXXconfig to suit to your need.
-make olddefconfig || echo ">> Error: make oldconfig"
+make olddefconfig || echo ">> Error: make olddefconfig"
 make -j4 || echo ">> Error: make"
 
 echo ">> Making modules installed to $PKG..."
@@ -86,3 +86,8 @@ cd $PKG
 
 cd $PKG_SRC
 /sbin/makepkg -l y -c n $TMP/kernel-source-$VERSION-$ARCH-$BUILD.txz
+
+# Run the dummy script for modules.
+sh ./kernel-modules.SlackBuild
+
+exit
